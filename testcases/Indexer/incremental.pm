@@ -1,9 +1,9 @@
-package testcases::incremental;
+package testcases::Indexer::incremental;
 use strict;
 use XAO::Utils;
 use Data::Dumper;
 
-use base qw(testcases::base);
+use base qw(testcases::Indexer::base);
 
 sub test_incremental {
     my $self=shift;

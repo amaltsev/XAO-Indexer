@@ -1,10 +1,10 @@
-package testcases::search;
+package testcases::Indexer::search;
 use strict;
 use utf8;
 use XAO::Utils;
 use Encode;
 
-use base qw(testcases::base);
+use base qw(testcases::Indexer::base);
 
 ###############################################################################
 

@@ -1,8 +1,8 @@
-package testcases::spellchecker;
+package testcases::Indexer::spellchecker;
 use strict;
 use XAO::Utils;
 
-use base qw(testcases::base);
+use base qw(testcases::Indexer::base);
 
 sub test_spellchecker {
     my $self=shift;
@@ -73,7 +73,7 @@ sub test_spellchecker {
 sub do_test {
     my $self=shift;
     my $config=$self->{'config'};
- 
+
     my $index_list=$config->odb->fetch('/Indexes');
     my $foo_index=$index_list->get('foo');
 

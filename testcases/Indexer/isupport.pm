@@ -1,10 +1,10 @@
-package testcases::isupport;
+package testcases::Indexer::isupport;
 use strict;
 use XAO::Utils;
 use XAO::IndexerSupport;
 use Data::Dumper;
 
-use base qw(testcases::base);
+use base qw(testcases::Indexer::base);
 
 sub test_template_sort {
     my $self=shift;

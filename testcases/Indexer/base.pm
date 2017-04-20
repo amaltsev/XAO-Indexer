@@ -1,4 +1,4 @@
-package testcases::base;
+package testcases::Indexer::base;
 use strict;
 use utf8;
 use Encode;
@@ -423,7 +423,7 @@ I have *never* heard them sound better.  They are *wailing* up here."
 inveterate skeptic I have closed my mind to the truth.  Most notably I have
 ignored the evidence for an Earth that is six thousand years old.  Well, I
 haven't ignored it; I considered the purported evidence and *then* rejected it.
-There is a difference, and this is a difference, we might say, between 
+There is a difference, and this is a difference, we might say, between
 prejudice and postjudice.  Prejudice is making a judgment before you have
 looked at the facts.  Postjudice is making a judgment afterwards.  Prejudice
 is terrible, in the sense that you commit injustices and you make serious

@@ -1,8 +1,8 @@
-package testcases::basic;
+package testcases::Indexer::basic;
 use strict;
 use XAO::Utils;
 
-use base qw(testcases::base);
+use base qw(testcases::Indexer::base);
 
 sub test_basic {
     my $self=shift;
