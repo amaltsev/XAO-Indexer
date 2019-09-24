@@ -1,104 +1,123 @@
 package testcases::Indexer::base;
 use strict;
+use warnings;
 use utf8;
+use CGI;
 use Encode;
-use XAO::Utils;
 use XAO::Base;
-use XAO::Objects;
-use XAO::Projects qw(:all);
+use XAO::Utils;
+use XAO::Web;
 
-use base qw(Test::Unit::TestCase);
+use base qw(XAO::testcases::base);
 
 use constant NAME_LENGTH => 50;
 use constant TEXT_LENGTH => 500;
 
+sub new ($) {
+    my $proto=shift;
+    my $self=$proto->SUPER::new(@_);
+
+    my %d;
+    if(1) {
+        open(F,'.config') ||
+            die "No .config found, run 'perl Makefile.PL'";
+        local($/);
+        my $t=<F>;
+        close(F);
+        eval $t;
+    }
+
+    $self->{'skip_db_tests'}=$d{'test_dsn'} eq 'none' ? 1 : 0;
+
+    return $self;
+}
+
+sub list_tests ($) {
+    my $self=shift;
+
+    my @tests=$self->SUPER::list_tests(@_);
+
+    if($self->{'skip_db_tests'}) {
+        @tests=();
+    }
+
+    return wantarray ? @tests : \@tests;
+}
+
 sub set_up {
     my $self=shift;
 
-    chomp(my $root=`pwd`);
-    $root.='/testcases/testroot';
-    XAO::Base::set_root($root);
+    $self->SUPER::set_up();
 
-    my $config=XAO::Objects->new(objname => 'Config',
-                                 sitename => 'test');
-    create_project(name => 'test',
-                   object => $config,
-                   set_current => 1);
-    $config->init();
+    my $site=XAO::Web->new(sitename => 'test');
+    $site->set_current();
 
-    $self->{config}=$config;
+    my $cgi=CGI->new('foo=bar&test=1');
 
-    $config->odb->fetch('/')->build_structure(
-        Indexes => {
-            type        => 'list',
-            class       => 'Data::Index',
-            key         => 'index_id',
-        },
-        Foo => {
-            type        => 'list',
-            class       => 'Data::Foo',
-            key         => 'foo_id',
-            key_format  => 'foo_<$AUTOINC$>',
-            structure   => {
-                Bar => {
-                    type        => 'list',
-                    class       => 'Data::Bar',
-                    key         => 'bar_id',
-                    key_format  => 'bar_<$AUTOINC$>',
-                    structure   => {
-                        name => {
-                            type        => 'text',
-                            maxlength   => NAME_LENGTH,
-                            charset     => 'utf8',
-                        },
-                        text => {
-                            type        => 'text',
-                            maxlength   => TEXT_LENGTH,
-                            charset     => 'utf8',
+    $site->config->embedded('web')->enable_special_access();
+    $site->config->cgi($cgi);
+    $site->config->embedded('web')->disable_special_access();
+
+    $self->{'siteconfig'}=$site->config;
+    $self->{'web'}=$site;
+    $self->{'cgi'}=$cgi;
+
+    if(!$self->{'skip_db_tests'}) {
+        $site->config->odb->fetch('/')->build_structure(
+            Indexes => {
+                type        => 'list',
+                class       => 'Data::Index',
+                key         => 'index_id',
+            },
+            Foo => {
+                type        => 'list',
+                class       => 'Data::Foo',
+                key         => 'foo_id',
+                key_format  => 'foo_<$AUTOINC$>',
+                structure   => {
+                    Bar => {
+                        type        => 'list',
+                        class       => 'Data::Bar',
+                        key         => 'bar_id',
+                        key_format  => 'bar_<$AUTOINC$>',
+                        structure   => {
+                            name => {
+                                type        => 'text',
+                                maxlength   => NAME_LENGTH,
+                                charset     => 'utf8',
+                            },
+                            text => {
+                                type        => 'text',
+                                maxlength   => TEXT_LENGTH,
+                                charset     => 'utf8',
+                            },
                         },
                     },
-                },
-                name => {
-                    type        => 'text',
-                    maxlength   => NAME_LENGTH,
-                    charset     => 'utf8',
-                },
-                text => {
-                    type        => 'text',
-                    maxlength   => TEXT_LENGTH,
-                    charset     => 'utf8',
+                    name => {
+                        type        => 'text',
+                        maxlength   => NAME_LENGTH,
+                        charset     => 'utf8',
+                    },
+                    text => {
+                        type        => 'text',
+                        maxlength   => TEXT_LENGTH,
+                        charset     => 'utf8',
+                    },
                 },
             },
-        },
-    );
+        );
+    }
 
-    $config->odb->fetch('/Indexes')->get_new->build_structure;
+    $site->config->odb->fetch('/Indexes')->get_new->build_structure;
 
-    push @INC,$root;
-}
-
-sub tear_down {
-    my $self=shift;
-    drop_project('test');
-}
-
-sub timestamp ($$) {
-    my $self=shift;
-    time;
-}
-
-sub timediff ($$$) {
-    my $self=shift;
-    my $t1=shift;
-    my $t2=shift;
-    $t1-$t2;
+    return $self;
 }
 
 use vars qw(@words);
 
 sub generate_content {
     my $self=shift;
-    my $odb=$self->{config}->odb;
+    my $odb=$self->siteconfig->odb;
 
     ##
     # Populating the database with a semi-random, but fixed set of data.

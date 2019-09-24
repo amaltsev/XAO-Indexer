@@ -4,7 +4,7 @@ package XAO::Indexer;
 use strict;
 
 use vars qw($VERSION);
-$VERSION='1.04';
+$VERSION='1.05';
 
 1;
 ###############################################################################

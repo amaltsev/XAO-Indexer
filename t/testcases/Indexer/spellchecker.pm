@@ -33,7 +33,7 @@ sub test_spellchecker {
     ##
     # Changing config to activate the spellchecker
     #
-    my $config=$self->{'config'};
+    my $config=$self->siteconfig;
     $config->put('/indexer/default/use_spellchecker' => 1);
     $config->put('/indexer/default/spellchecker' => {
         max_alt_words       => 10,
@@ -72,7 +72,7 @@ sub test_spellchecker {
 
 sub do_test {
     my $self=shift;
-    my $config=$self->{'config'};
+    my $config=$self->siteconfig;
 
     my $index_list=$config->odb->fetch('/Indexes');
     my $foo_index=$index_list->get('foo');

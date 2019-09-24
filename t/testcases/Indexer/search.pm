@@ -10,7 +10,7 @@ use base qw(testcases::Indexer::base);
 
 sub test_search {
     my $self=shift;
-    my $odb=$self->{'config'}->odb;
+    my $odb=$self->siteconfig->odb;
 
     $self->generate_content();
 

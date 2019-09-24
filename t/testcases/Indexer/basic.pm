@@ -6,7 +6,7 @@ use base qw(testcases::Indexer::base);
 
 sub test_basic {
     my $self=shift;
-    my $config=$self->{config};
+    my $config=$self->siteconfig;
     $self->assert(ref($config),
                   "Can't get test project configuration");
     my $odb=$config->odb;
