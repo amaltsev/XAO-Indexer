@@ -53,6 +53,8 @@ $VERSION=(0+sprintf('%u.%03u',(q$Id: Base.pm,v 1.47 2008/07/06 05:47:54 am Exp $
 Splits given text strings into keywords and stores them into kw_data
 hash (first argument) using unique id from the second argument.
 
+=back
+
 =cut
 
 sub analyze_text ($$$@) {
